@@ -1,0 +1,62 @@
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE-specific files
+
+## STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+## IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+## NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+## VS Code
+.vscode/
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# Generated files
+*.jar
+*.war
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+src/main/resources/application.properties
+src/main/resources/application.yml
