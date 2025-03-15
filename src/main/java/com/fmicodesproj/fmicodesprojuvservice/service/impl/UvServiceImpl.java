@@ -98,6 +98,7 @@ public class UvServiceImpl implements UvService {
                     .uvIndex(response.getCurrent().getUvi())
                     .sunset(Timestamp.from(Instant.ofEpochSecond(response.getCurrent().getSunset())))
                     .sunrise(Timestamp.from(Instant.ofEpochSecond(response.getCurrent().getSunrise())))
+                    .weather(response.getCurrent().getWeather().getFirst().getDescription())
                     .temperatureC(response.getCurrent().getTemp() - 273.15)
                     .build();
         }
