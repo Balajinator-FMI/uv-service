@@ -59,11 +59,13 @@ public class UvServiceImpl implements UvService {
 
     private List<UvIdxTimeData> getUvIdxTimeData(String url) {
         RestTemplate restTemplate = new RestTemplate();
-        InstanceOpenWeatherResponse[] weatherDataArray = restTemplate.getForObject(url, InstanceOpenWeatherResponse[].class);
+
+        // Fetching the entire response
+        DailyForecastResponse weatherResponse = restTemplate.getForObject(url, DailyForecastResponse.class);
 
         List<UvIdxTimeData> uvDataList = new ArrayList<>();
-        if (weatherDataArray != null) {
-            for (InstanceOpenWeatherResponse data : weatherDataArray) {
+        if (weatherResponse != null && weatherResponse.getDaily() != null) {
+            for (InstanceOpenWeatherResponse data : weatherResponse.getDaily()) {
                 UvIdxTimeData uvData = UvIdxTimeData.builder()
                         .date(Timestamp.from(Instant.ofEpochSecond(data.getDt())))
                         .uvIndex(data.getUvi())
@@ -73,8 +75,8 @@ public class UvServiceImpl implements UvService {
             }
         }
         return uvDataList;
-
     }
+
 
     private CurrentUvData getCurrentUvData(Double lat, Double lon) {
         var url = String.format("%s?lat=%f&lon=%f&exclude=minutely,hourly,alerts,daily&appid=%s", apiUrl, lat, lon, apiKey);
