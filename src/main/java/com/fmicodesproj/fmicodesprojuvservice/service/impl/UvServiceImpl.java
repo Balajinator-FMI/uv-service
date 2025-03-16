@@ -49,7 +49,7 @@ public class UvServiceImpl implements UvService {
     private List<UvIdxTimeData> getUvIdxHistory(Double lat, Double lon) {
         List<HistoricalOpenWeatherResponse> historicalData = new ArrayList<>();
 
-        for (int i = 1; i <= DAYS; i++) {
+        for (int i = 0; i < DAYS; i++) {
             long pastTime = Instant.now().getEpochSecond() - (i * 86400L);
             String url = String.format(
                     "%s/timemachine?lat=%f&lon=%f&dt=%d&appid=%s",
