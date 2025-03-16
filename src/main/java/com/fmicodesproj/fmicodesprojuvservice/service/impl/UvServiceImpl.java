@@ -47,20 +47,36 @@ public class UvServiceImpl implements UvService {
     }
 
     private List<UvIdxTimeData> getUvIdxHistory(Double lat, Double lon) {
-        long pastTime = Instant.now().getEpochSecond() - (DAYS * 86400);
-        long currentTime = Instant.now().getEpochSecond();
-        String url = String.format(
-                "%s?lat=%f&lon=%f&start=%d&end=%d&exclude=current,minutely,hourly,alerts,summary&appid=%s",
-                apiUrl, lat, lon, pastTime, currentTime, apiKey
-        );
+        List<HistoricalOpenWeatherResponse> historicalData = new ArrayList<>();
 
-        return getUvIdxTimeData(url);
+        for (int i = 1; i <= DAYS; i++) {
+            long pastTime = Instant.now().getEpochSecond() - (i * 86400L);
+            String url = String.format(
+                    "%s/timemachine?lat=%f&lon=%f&dt=%d&appid=%s",
+                    apiUrl, lat, lon, pastTime, apiKey
+            );
+
+            RestTemplate restTemplate = new RestTemplate();
+            HistoricalOpenWeatherResponse response = restTemplate.getForObject(url, com.fmicodesproj.fmicodesprojuvservice.domain.HistoricalOpenWeatherResponse.class);
+
+            if (response != null) {
+                historicalData.add(response);
+            }
+        }
+
+        return historicalData.stream().map(
+             h -> {
+                return UvIdxTimeData.builder()
+                        .date(Timestamp.from(Instant.ofEpochSecond(h.getData().getFirst().getDt())))
+                        .uvIndex(h.getData().getFirst().getUvi())
+                        .build();
+            }
+        ).toList();
     }
 
     private List<UvIdxTimeData> getUvIdxTimeData(String url) {
         RestTemplate restTemplate = new RestTemplate();
 
-        // Fetching the entire response
         DailyForecastResponse weatherResponse = restTemplate.getForObject(url, DailyForecastResponse.class);
 
         List<UvIdxTimeData> uvDataList = new ArrayList<>();
